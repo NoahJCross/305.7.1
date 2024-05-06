@@ -1,6 +1,6 @@
 package com.example.a71;
-
 public class LostItem {
+    // Properties of a lost item
     private long id;
     private String lostItemName;
     private String phoneNumber;
@@ -9,6 +9,7 @@ public class LostItem {
     private String location;
     private int found;
 
+    // Constructors
     public LostItem() {
     }
 
@@ -21,7 +22,7 @@ public class LostItem {
         this.found = found;
     }
 
-    // Getters and setters
+    // Getters and setters for the properties
     public long getId() {
         return id;
     }
@@ -37,7 +38,6 @@ public class LostItem {
     public void setLostItemName(String lostItemName) {
         this.lostItemName = lostItemName;
     }
-
 
     public String getPhoneNumber() {
         return phoneNumber;

@@ -1,17 +1,20 @@
 package com.example.a71;
-
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import com.example.a71.LostItem;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class LostItemsDbHandler extends SQLiteOpenHelper {
+    // Database version and name
     private static final int DATABASE_VERSION = 1;
     private static final String DATABASE_NAME = "lostitemsdb";
+    // Table and column names
     private static final String TABLE_NAME = "lostitems";
     private static final String ID_COL = "id";
     private static final String LOST_ITEM_COL = "lostitem";
@@ -21,11 +24,12 @@ public class LostItemsDbHandler extends SQLiteOpenHelper {
     private static final String LOCATION_COL = "location";
     private static final String FOUND_COL = "found";
 
-
+    // Constructor
     public LostItemsDbHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
+    // Create database table
     @Override
     public void onCreate(SQLiteDatabase db) {
         String CREATE_LostItemS_TABLE = "CREATE TABLE " + TABLE_NAME + "("
@@ -39,6 +43,7 @@ public class LostItemsDbHandler extends SQLiteOpenHelper {
         db.execSQL(CREATE_LostItemS_TABLE);
     }
 
+    // Add a new lost item to the database
     public void addLostItem(LostItem lostItem) {
         SQLiteDatabase db = this.getWritableDatabase();
 
@@ -54,11 +59,11 @@ public class LostItemsDbHandler extends SQLiteOpenHelper {
         db.close();
     }
 
+    // Retrieve a lost item by its ID
     public LostItem getLostItemById(long itemId) {
         SQLiteDatabase db = this.getReadableDatabase();
         String query = "SELECT * FROM " + TABLE_NAME + " WHERE " + ID_COL + "=?";
         Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(itemId)});
-
 
         LostItem lostItem = null;
         if (cursor.moveToFirst()) {
@@ -76,7 +81,7 @@ public class LostItemsDbHandler extends SQLiteOpenHelper {
         return lostItem;
     }
 
-
+    // Retrieve all lost items from the database
     public List<LostItem> getLostItems() {
         List<LostItem> lostItemList = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
@@ -104,16 +109,17 @@ public class LostItemsDbHandler extends SQLiteOpenHelper {
         return lostItemList;
     }
 
+    // Delete a lost item from the database
     public void deleteLostItem(long id) {
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete(TABLE_NAME, ID_COL + " = ?", new String[]{String.valueOf(id)});
         db.close();
     }
 
+    // Upgrade the database (drop table and recreate)
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
         onCreate(db);
     }
 }
-

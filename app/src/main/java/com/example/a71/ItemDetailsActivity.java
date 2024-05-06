@@ -17,44 +17,55 @@ import java.util.concurrent.TimeUnit;
 
 public class ItemDetailsActivity extends AppCompatActivity {
 
+    // UI elements
     private TextView itemNameTextView;
     private TextView dateTextView;
     private TextView locationTextView;
     private Button removeButton;
     private LostItemsDbHandler lostItemsDbHandler;
 
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.item_details);
+
+        // Retrieve item ID from intent
         long itemId = getIntent().getLongExtra("item_id", 0);
 
+        // Initialize database handler
         lostItemsDbHandler = new LostItemsDbHandler(this);
+
+        // Retrieve lost item from database using the item ID
         LostItem lostItem = lostItemsDbHandler.getLostItemById(itemId);
 
+        // Initialize UI elements
         itemNameTextView = findViewById(R.id.itemNameTextView);
         dateTextView = findViewById(R.id.dateTextView);
         locationTextView = findViewById(R.id.locationTextView);
 
+        // Set text for item name, date, and location TextViews
         String lOrF = lostItem.getFound() == 0 ? "Lost " : "Found ";
         itemNameTextView.setText(lOrF + lostItem.getLostItemName());
         String date = getFormattedDate(lostItem.getDate());
         dateTextView.setText(lOrF + date);
         locationTextView.setText("At " + lostItem.getLocation());
 
+        // Initialize and handle click for the remove button
         removeButton = findViewById(R.id.removeButton);
         removeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // Delete the lost item from the database
                 lostItemsDbHandler.deleteLostItem(lostItem.getId());
+                // Redirect to the list activity
                 Intent intent = new Intent(ItemDetailsActivity.this, LANDFListActivity.class);
                 startActivity(intent);
             }
         });
-
-
     }
-    private String getFormattedDate(String date) {
 
+    // Method to get formatted date string (e.g., Today, Yesterday, or X days ago)
+    private String getFormattedDate(String date) {
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
         Date lostDate = null;
         try {
